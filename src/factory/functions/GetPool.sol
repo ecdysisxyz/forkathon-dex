@@ -3,7 +3,7 @@ pragma solidity ^0.8.24;
 
 import "../storage/Schema.sol";
 import "../storage/Storage.sol";
-import "./PoolLib.sol";
+import "../../DEXLib.sol";
 
 /**
  * @title GetPool
@@ -22,7 +22,7 @@ contract GetPool {
         require(tokenA != address(0) && tokenB != address(0), "GetPool: ZERO_ADDRESS");
 
         // Sort tokens to prevent duplicates (tokenA should always be less than tokenB)
-        (address token0, address token1) = PoolLib.sortTokens(tokenA, tokenB);
+        (address token0, address token1) = DEXLib.sortTokens(tokenA, tokenB);
 
         Schema.$FactoryState storage state = Storage.FactoryState();
 

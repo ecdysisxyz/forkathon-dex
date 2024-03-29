@@ -15,8 +15,7 @@ interface Schema {
         // Token addresses for the liquidity pool
         address tokenA;
         address tokenB;
-        // Reserves for tokenA and tokenB, used to manage and calculate swaps and liquidity provisioning
-        uint256 reserveA;
-        uint256 reserveB;
+        // Address of the associated liquidity token
+        address lptoken;
     }
 }

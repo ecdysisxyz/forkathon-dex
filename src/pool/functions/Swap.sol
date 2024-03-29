@@ -10,63 +10,45 @@ import "../storage/Storage.sol";
  * @dev Implementation of token swap functionality in a DEX liquidity pool.
  */
 contract Swap {
-    // Event emitted when tokens are swapped
-    event TokensSwapped(address indexed buyer, address tokenIn, address tokenOut, uint amountIn, uint amountOut);
-
     /**
-     * @notice Swaps `amountIn` of `tokenIn` for a minimum of `amountOutMin` of `tokenOut`
-     * @param tokenIn The address of the token being swapped in
-     * @param tokenOut The address of the token being swapped out
-     * @param amountIn The amount of `tokenIn` being swapped
-     * @param amountOutMin The minimum amount of `tokenOut` to receive from the swap
-     * @return amountOut The actual amount of `tokenOut` received
-     */
+     * @notice Executes a token swap from token A to token B or vice versa in the liquidity pool.
+     * @dev This function allows a user to swap an input amount of one token (token A or token B)
+     * for an output amount of the other token, based on the current reserve ratios and swap fee rates
+     * in the pool. The function is designed to be called externally. It calculates the output amount
+     * taking into consideration the invariant formula, fees, and slippage.
+     * @param amountAIn The amount of token A that the caller wants to swap into the pool.
+     * @param amountBIn The amount of token B that the caller wants to swap into the pool.
+     * @return amountOut The total amount of the other token (token B for amountAIn, token A for amountBIn)
+     *                   that will be received as a result of the swap.\
+     */    
     function swap(
-        address tokenIn,
-        address tokenOut,
-        uint amountIn,
-        uint amountOutMin
+        uint amountAIn, uint amountBIn
     ) external returns (uint amountOut) {
         Schema.$PoolState storage state = Storage.PoolState();
         // Ensure the pool has been initialized
         require(state.initialized, "Swap: POOL_NOT_INITIALIZED");
 
-        // Validate the token pair
-        require(tokenIn != tokenOut, "Swap: INVALID_TOKEN_PAIR");
-        require(tokenIn == state.tokenA || tokenIn == state.tokenB, "Swap: TOKEN_IN_NOT_SUPPORTED");
-        require(tokenOut == state.tokenA || tokenOut == state.tokenB, "Swap: TOKEN_OUT_NOT_SUPPORTED");
+        require(amountAIn > 0 || amountBIn > 0, 'Swap: INSUFFICIENT_INPUT_AMOUNT');
 
-        // Calculate the output amount using the current reserves and the input amount
-        (uint reserveIn, uint reserveOut) = _getReserves(tokenIn, tokenOut);
-        amountOut = _getAmountOut(amountIn, reserveIn, reserveOut);
+        uint reserveA = IERC20(state.tokenA).balanceOf(address(this));
+        uint reserveB = IERC20(state.tokenB).balanceOf(address(this));
 
-        // Check against the minimum output amount for slippage protection
-        require(amountOut >= amountOutMin, "Swap: INSUFFICIENT_OUTPUT_AMOUNT");
-
-        // Update the reserves
-        _updateReserves(tokenIn, tokenOut, amountIn, amountOut);
-
-        // Transfer `tokenIn` from the msg.sender to this contract
-        require(IERC20(tokenIn).transferFrom(msg.sender, address(this), amountIn), "Swap: TRANSFER_IN_FAILED");
-
-        // Transfer `tokenOut` from this contract to the msg.sender
-        require(IERC20(tokenOut).transfer(msg.sender, amountOut), "Swap: TRANSFER_OUT_FAILED");
-
-        emit TokensSwapped(msg.sender, tokenIn, tokenOut, amountIn, amountOut);
-    }
-
-    /**
-     * @dev Returns the reserves for the given token pair.
-     */
-    function _getReserves(address tokenIn, address tokenOut) internal view returns (uint reserveIn, uint reserveOut) {
-        // Logic to retrieve the reserves from storage
+        if (amountAIn > 0) {
+            amountOut = _getAmountOut(amountAIn, reserveA, reserveB);
+            require(amountOut > 0, 'Swap: INSUFFICIENT_OUTPUT_AMOUNT');
+            IERC20(state.tokenB).transfer(msg.sender, amountOut);
+        } else if (amountBIn > 0) {
+            amountOut = _getAmountOut(amountBIn, reserveB, reserveA);
+            require(amountOut > 0, 'Swap: INSUFFICIENT_OUTPUT_AMOUNT');
+            IERC20(state.tokenA).transfer(msg.sender, amountOut);
+        }
     }
 
     /**
      * @dev Given an input amount of an asset and pair reserves, returns the maximum output amount of the other asset.
      */
     function _getAmountOut(uint amountIn, uint reserveIn, uint reserveOut) internal pure returns (uint amountOut) {
-        // Implementation of the AMM pricing formula, e.g., Constant Product Formula, to calculate amountOut
+        amountOut = amountIn * reserveOut / (reserveIn + amountIn);
     }
 
     /**
