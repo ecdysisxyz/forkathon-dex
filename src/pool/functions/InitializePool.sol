@@ -6,7 +6,7 @@ import "../storage/Schema.sol";
 import "../storage/Storage.sol";
 import "../LPToken.sol";
 
-contract Initialize {
+contract InitializePool {
     /**
      * @notice Initializes a new liquidity pool with token addresses and other parameters.
      * @param tokenA Address of the first token in the pool

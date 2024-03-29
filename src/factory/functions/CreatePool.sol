@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
+import "ucs-contracts/src/proxy/ERC7546ProxyEtherscan.sol";
 import "../storage/Schema.sol";
 import "../storage/Storage.sol";
+import  {InitializePool} from "../../pool/functions/InitializePool.sol";
 import "../../DEXLib.sol";
 
 /**
@@ -34,7 +36,7 @@ contract CreatePool {
         // Code to deploy a new liquidity pool contract for the token pair
         // This can be a clone of a master pool contract or a new deployment, depending on the design.
         // For simplicity, the actual deployment logic is abstracted away.
-        pool = _deployPool(token0, token1);
+        pool = _deployPool(state.poolDictionary, token0, token1);
 
         // Register the new pool in the factory's storage
         state.poolAddress[token0][token1] = pool;
@@ -50,8 +52,10 @@ contract CreatePool {
      * @dev Deploys a new liquidity pool for the given token pair.
      * Could involve complex logic for deploying or cloning contracts, not shown for brevity.
      */
-    function _deployPool(address tokenA, address tokenB) internal returns (address pool) {
+    function _deployPool(address poolDictionary, address tokenA, address tokenB) internal returns (address pool) {
         // Implementation of pool deployment or cloning
         // Return the new pool's address
+        bytes memory initializePool = abi.encodeWithSelector(InitializePool.initialize.selector, tokenA, tokenB);
+        pool = address(new ERC7546ProxyEtherscan(poolDictionary, initializePool));
     }
 }

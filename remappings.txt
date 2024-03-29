@@ -3,3 +3,4 @@ forge-std/=lib/forge-std/src/
 mc/=lib/mc/
 bundle/=src/
 @openzeppelin/contracts/=lib/mc/lib/openzeppelin-contracts/contracts/
+ucs-contracts/=lib/mc/lib/ucs-contracts
