@@ -56,7 +56,15 @@ contract FactoryTest is MCTest {
         factory.createPool(tokens[1], tokens[0]);
     }
 
-    function test_Fail_increment() public {
+    function test_Success_getPool() public {
+        vm.expectRevert();
+        factory.getPool(tokens[0], tokens[1]);
+        vm.expectRevert();
+        factory.getPool(tokens[1], tokens[0]);
 
+        factory.createPool(tokens[0], tokens[1]);
+
+        assertTrue(factory.getPool(tokens[0], tokens[1]) != address(0));
+        assertTrue(factory.getPool(tokens[0], tokens[1]) != address(0));
     }
 }

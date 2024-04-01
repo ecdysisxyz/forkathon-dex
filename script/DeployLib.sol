@@ -2,8 +2,7 @@
 pragma solidity ^0.8.13;
 
 import {MCDevKit} from "mc/devkit/MCDevKit.sol";
-// Bundle interface
-import {CounterFacade} from "bundle/counter/interfaces/CounterFacade.sol";
+
 // Functions
 import {CreatePool} from "bundle/factory/functions/CreatePool.sol";
 import {GetPool} from "bundle/factory/functions/GetPool.sol";

@@ -5,6 +5,6 @@ import "./IFactory.sol";
 
 contract FactoryFacade is IFactory {
     function createPool(address tokenA, address tokenB) external {}
-    function getPool(address tokenA, address tokenB) external {}
+    function getPool(address tokenA, address tokenB) external returns (address pool) {}
     function initializeFactory(address poolDictionary) external {}
 }
