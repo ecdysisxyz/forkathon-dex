@@ -5,21 +5,46 @@ import {MCDevKit} from "mc/devkit/MCDevKit.sol";
 // Bundle interface
 import {CounterFacade} from "bundle/counter/interfaces/CounterFacade.sol";
 // Functions
-import {Increment} from "bundle/counter/functions/Increment.sol";
-import {SetNumber} from "bundle/counter/functions/SetNumber.sol";
-import {Initialize} from "bundle/counter/functions/protected/Initialize.sol";
+import {CreatePool} from "bundle/factory/functions/CreatePool.sol";
+import {GetPool} from "bundle/factory/functions/GetPool.sol";
+import {InitializeFactory} from "bundle/factory/functions/InitializeFactory.sol";
+import {FactoryFacade} from "bundle/factory/interfaces/FactoryFacade.sol";
+
+import {AddLiquidity} from "bundle/pool/functions/AddLiquidity.sol";
+import {InitializePool} from "bundle/pool/functions/InitializePool.sol";
+import {RemoveLiquidity} from "bundle/pool/functions/RemoveLiquidity.sol";
+import {Swap} from "bundle/pool/functions/Swap.sol";
+import {PoolFacade} from "bundle/pool/interfaces/PoolFacade.sol";
 
 library DeployLib {
-    function bundleName() internal returns(string memory) {
-        return "Counter";
+    function factoryBundleName() internal returns(string memory) {
+        return "DEX-factory";
+    }
+    function poolBundleName() internal returns(string memory) {
+        return "DEX-pool";
     }
 
-    function deployCounter(MCDevKit storage mc, uint256 initialNumber) internal returns(MCDevKit storage) {
-        mc.init(bundleName());
-        mc.use("Increment", Increment.increment.selector, address(new Increment()));
-        mc.use("SetNumber", SetNumber.setNumber.selector, address(new SetNumber()));
-        mc.use("Initialize", Initialize.initialize.selector, address(new Initialize()));
-        mc.deploy(abi.encodeCall(Initialize.initialize, initialNumber));
+    function deployPool(MCDevKit storage mc) internal returns(MCDevKit storage) {
+        mc.init(poolBundleName());
+        mc.use("AddLiquidity", AddLiquidity.addLiquidity.selector, address(new AddLiquidity()));
+        mc.use("InitializePool", InitializePool.initialize.selector, address(new InitializePool()));
+        mc.use("RemoveLiquidity", RemoveLiquidity.removeLiquidity.selector, address(new RemoveLiquidity()));
+        mc.use("Swap", Swap.swap.selector, address(new Swap()));
+        mc.set(address(new PoolFacade()));
+        mc.deploy();
+        return mc;
+    }
+
+    function deployFactory(MCDevKit storage mc) internal returns(MCDevKit storage) {
+        deployPool(mc);
+        address poolDictionary = mc.getDictionaryAddress();
+        
+        mc.init(factoryBundleName());
+        mc.use("CreatePool",CreatePool.createPool.selector, address(new CreatePool()));
+        mc.use("GetPool",GetPool.getPool.selector, address(new GetPool()));
+        mc.use("InitializeFactory", InitializeFactory.initialize.selector, address(new InitializeFactory()));
+        mc.set(address(new FactoryFacade()));
+        mc.deploy(abi.encodeCall(InitializeFactory.initialize, poolDictionary));
         return mc;
     }
 }

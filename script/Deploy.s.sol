@@ -10,8 +10,8 @@ contract DeployScript is MCScript {
 
     function run() public {
         vm.startBroadcast(getPrivateKey("DEPLOYER_PRIV_KEY"));
-
-        mc.deployCounter(1);
+        
+        mc.deployFactory();
 
         vm.stopBroadcast();
 
