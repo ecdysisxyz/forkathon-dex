@@ -28,7 +28,7 @@ contract PoolTest is MCTest {
     function setUp() public {
         factory = IFactory(mc.deployFactory().toProxyAddress());
 
-        mc.setStorageReader(mc.findDictionary(DeployLib.poolBundleName()), IPoolTester.PoolState.selector, address(new StorageReader()));
+        mc.setStorageReader(DeployLib.poolBundleName(), IPoolTester.PoolState.selector, address(new StorageReader()));
 
         for (uint i;i<2;i++) {
             tokens[i] = address(new TestERC20(address(this)));
