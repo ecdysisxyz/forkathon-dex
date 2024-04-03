@@ -1,18 +1,37 @@
-# Meta Contract Template
-Welcome to the Meta Contract Template! This template is your fast track to smart contract development, offering a pre-configured setup with the [Meta Contract](https://github.com/metacontract/mc) framework and essential tools like the [ERC-7201 Storage Location Calculator](https://github.com/metacontract/erc7201). It's designed for developers looking to leverage advanced features and best practices right from the start.
+# Forkathon DEX
+This repository houses Forkathon DEX, a rebuild of simplified AMM-DEX using the metacontract framework.
 
-## Quick Start
-Ensure you have [Foundry](https://github.com/foundry-rs/foundry) installed, then initialize your project with:
-```sh
-$ forge init <Your Project Name> -t metacontract/template
+## Overview
+This DEX repository is built on the metacontract framework and contains the following bundles and functions. 
+Each bundle corresponds to a specific functionality or role within the DEX, with functions performing detailed operations within those bundles.
+
+### Factory
+Responsible for creating unique liquidity pools for each token pair.
+
+#### Functions
+- createPool(address tokenA, address tokenB)
+  - Generates a new liquidity pool for the specified token pair.
+- getPool(address tokenA, address tokenB)
+  - Retrieve the address of a liquidity pool.
+
+### Pool
+Manages liquidity pools for each token pair.
+
+#### Functions
+- addLiquidity(uint amountA, uint amountB)
+  - Provides liquidity to the pool of the specified token pair.
+- removeLiquidity(uint liquidity)
+  - Removes liquidity from the pool and retrieves corresponding tokens.
+- swap(uint amountAIn, uint amountBIn)
+  - Executes a swap from token A to token B or vice versa.
+  - Without slippage control, no fee collection.
+
+## Follow setup instructions
+### Clone
+```bash
+git clone https://github.com/ecdysisxyz/forkathon-dex.git
+cd forkathon-dex
 ```
-This command sets up your environment with all the benefits of the meta contract framework, streamlining your development process.
 
-## Features
-- Pre-integrated with meta contract for optimal smart contract development with highly flexible upgradeability & maintainability.
-- Includes ERC-7201 Storage Location Calculator for calculating storage locations based on ERC-7201 names for enhanced efficiency.
-- Ready-to-use project structure for immediate development start.
-
-For detailed documentation and further guidance, visit [Meta Contract Book](https://mc-book.ecdysis.xyz/).
-
-Start building your decentralized applications with meta contract today and enjoy a seamless development experience!
+### Prerequisites
+- Foundry
