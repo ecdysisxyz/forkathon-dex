@@ -30,7 +30,7 @@ contract RemoveLiquidity {
         uint reserveA = tokenA.balanceOf(address(this));
         uint reserveB = tokenB.balanceOf(address(this));
 
-        uint _totalSupply = IERC20(state.lptoken).totalSupply();
+        uint _totalSupply = lptoken.totalSupply();
 
         amountA = (amount * reserveA) / _totalSupply;
         amountB = (amount * reserveB) / _totalSupply;

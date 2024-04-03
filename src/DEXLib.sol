@@ -11,14 +11,14 @@ library DEXLib {
         (token0, token1) = tokenA < tokenB ? (tokenA, tokenB) : (tokenB, tokenA);
     }
 
-    function mint(address token, address to, uint amount) internal returns(bool) {
+    function mint(address token, address to, uint amount) internal {
         (bool success, ) = token.call(abi.encodeWithSignature("mint(address,uint256)", to, amount));
-        return success;
+        require(success);
     }
 
-    function burn(address token, address to, uint amount) internal  returns(bool) {
-        (bool success, ) = token.call(abi.encodeWithSignature("burn(address,uint256)", to, amount));
-        return success;
+    function burn(address token, address from, uint amount) internal {
+        (bool success, ) = token.call(abi.encodeWithSignature("burn(address,uint256)", from, amount));
+        require(success);
     }
 
     /**

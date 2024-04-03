@@ -47,13 +47,13 @@ contract AddLiquidity {
                 (amountA, amountB) = (amountAOptimal, amountBDesired);
             }
         }
-        lptoken.transferFrom(msg.sender, address(this), amountA);
-        lptoken.transferFrom(msg.sender, address(this), amountB);
+        IERC20(state.tokenA).transferFrom(msg.sender, address(this), amountA);
+        IERC20(state.tokenB).transferFrom(msg.sender, address(this), amountB);
 
-        uint _totalSupply = IERC20(state.lptoken).totalSupply(); // gas savings, must be defined here since totalSupply can update in _mintFee
+        uint _totalSupply = lptoken.totalSupply();
         if (_totalSupply == 0) {
             liquidity = Math.sqrt(amountA*amountB) - DEXLib.MINIMUM_LIQUIDITY;
-            DEXLib.mint(address(lptoken), address(0), DEXLib.MINIMUM_LIQUIDITY);
+            DEXLib.mint(address(lptoken), address(this), DEXLib.MINIMUM_LIQUIDITY);
         } else {
             liquidity = Math.min(amountA * _totalSupply / reserveA, amountB * _totalSupply / reserveB);
         }

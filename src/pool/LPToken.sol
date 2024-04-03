@@ -25,7 +25,7 @@ contract LPToken is ERC20, Ownable {
      * @param from The address from which tokens will be burned.
      * @param amount The amount of tokens to burn.
      */
-    function burnFrom(address from, uint256 amount) public onlyOwner {
+    function burn(address from, uint256 amount) public onlyOwner {
         _burn(from, amount);
     }
 }

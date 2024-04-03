@@ -16,10 +16,10 @@ import {Swap} from "bundle/pool/functions/Swap.sol";
 import {PoolFacade} from "bundle/pool/interfaces/PoolFacade.sol";
 
 library DeployLib {
-    function factoryBundleName() internal returns(string memory) {
+    function factoryBundleName() internal pure returns(string memory) {
         return "DEX-factory";
     }
-    function poolBundleName() internal returns(string memory) {
+    function poolBundleName() internal pure returns(string memory) {
         return "DEX-pool";
     }
 
