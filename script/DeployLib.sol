@@ -29,20 +29,20 @@ library DeployLib {
         mc.use("InitializePool", InitializePool.initialize.selector, address(new InitializePool()));
         mc.use("RemoveLiquidity", RemoveLiquidity.removeLiquidity.selector, address(new RemoveLiquidity()));
         mc.use("Swap", Swap.swap.selector, address(new Swap()));
-        mc.set(address(new PoolFacade()));
+        mc.useFacade(address(new PoolFacade()));
         mc.deploy();
         return mc;
     }
 
     function deployFactory(MCDevKit storage mc) internal returns(MCDevKit storage) {
         deployPool(mc);
-        address poolDictionary = mc.getDictionaryAddress();
-        
+        address poolDictionary = mc.toDictionaryAddress();
+
         mc.init(factoryBundleName());
         mc.use("CreatePool",CreatePool.createPool.selector, address(new CreatePool()));
         mc.use("GetPool",GetPool.getPool.selector, address(new GetPool()));
         mc.use("InitializeFactory", InitializeFactory.initialize.selector, address(new InitializeFactory()));
-        mc.set(address(new FactoryFacade()));
+        mc.useFacade(address(new FactoryFacade()));
         mc.deploy(abi.encodeCall(InitializeFactory.initialize, poolDictionary));
         return mc;
     }
