@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import "ucs-contracts/src/proxy/ERC7546ProxyEtherscan.sol";
+import "ucs-contracts/src/proxy/Proxy.sol";
 import "../storage/Schema.sol";
 import "../storage/Storage.sol";
 import  {InitializePool} from "../../pool/functions/InitializePool.sol";
@@ -56,6 +56,6 @@ contract CreatePool {
         // Implementation of pool deployment or cloning
         // Return the new pool's address
         bytes memory initializePool = abi.encodeWithSelector(InitializePool.initialize.selector, tokenA, tokenB);
-        pool = address(new ERC7546ProxyEtherscan(poolDictionary, initializePool));
+        pool = address(new Proxy(poolDictionary, initializePool));
     }
 }
