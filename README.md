@@ -26,6 +26,17 @@ Manages liquidity pools for each token pair.
   - Executes a swap from token A to token B or vice versa.
   - Without slippage control, no fee collection.
 
+### Gauge
+Reward distribution system based on staking LP tokens.
+
+#### Functions
+- deposit(uint amount)
+  - Deposit LP Token.
+- withdraw(uint amount)
+  - Withdraw LP Token.
+- claim
+  - Claim accumulated rewards based on the amount staked and the duration of the stake.
+
 ## Follow setup instructions
 ### Clone
 ```bash
