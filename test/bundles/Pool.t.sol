@@ -68,9 +68,9 @@ contract PoolTest is MCTest {
     function test_Success_Swap() public {
         pool.addLiquidity(1e18, 1e18);
 
-        uint befTokenBBalance = IERC20(tokens[1]).balanceOf(address(this));
+        uint befTokenBBalance = IERC20(tokens[0]).balanceOf(address(this));
         pool.swap(1e15, 0);
-        assertGt(IERC20(tokens[1]).balanceOf(address(this)), befTokenBBalance);
+        assertGt(IERC20(tokens[0]).balanceOf(address(this)), befTokenBBalance);
     }
 
     function test_Fail_Swap_Insufficient() public {

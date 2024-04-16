@@ -18,5 +18,7 @@ interface Schema {
         mapping(address => mapping(address => address)) poolAddress;
         // Array of all pools for enumeration
         address[] allPools;
+        // Address of the gauge dictionary
+        address gaugeDictionary;
     }
 }

@@ -4,16 +4,18 @@ pragma solidity ^0.8.24;
 import "../storage/Schema.sol";
 import "../storage/Storage.sol";
 
-contract InitializeFactory {
+contract InitializeGauge {
 
-    function initialize(address poolDictionary, address gaugeDictionary) external {
-        Schema.$FactoryState storage state = Storage.FactoryState();
+    function initialize(address lpToken, address rewardToken, uint256 allocAmount) external {
+        Schema.$GaugeState storage state = Storage.GaugeState();
 
         // Ensure that this function is called only once
         require(!state.initialized, "initialize: ALREADY_INITIALIZED");
 
-        state.poolDictionary = poolDictionary;
-        state.gaugeDictionary = gaugeDictionary;
+        // Set the token addresses, along with any other initial setup
+        state.lpToken = lpToken;
+        state.rewardToken = rewardToken;
+        state.allocAmount = allocAmount;
         
         // Mark the factory as initialized to prevent re-initialization
         state.initialized = true;

@@ -36,10 +36,12 @@ contract Swap {
         if (amountAIn > 0) {
             amountOut = _getAmountOut(amountAIn, reserveA, reserveB);
             require(amountOut > 0, 'Swap: INSUFFICIENT_OUTPUT_AMOUNT');
+            IERC20(state.tokenA).transferFrom(msg.sender, address(this), amountAIn);
             IERC20(state.tokenB).transfer(msg.sender, amountOut);
         } else if (amountBIn > 0) {
             amountOut = _getAmountOut(amountBIn, reserveB, reserveA);
             require(amountOut > 0, 'Swap: INSUFFICIENT_OUTPUT_AMOUNT');
+            IERC20(state.tokenB).transferFrom(msg.sender, address(this), amountBIn);
             IERC20(state.tokenA).transfer(msg.sender, amountOut);
         }
     }
@@ -49,12 +51,5 @@ contract Swap {
      */
     function _getAmountOut(uint amountIn, uint reserveIn, uint reserveOut) internal pure returns (uint amountOut) {
         amountOut = amountIn * reserveOut / (reserveIn + amountIn);
-    }
-
-    /**
-     * @dev Updates the reserves in the pool's storage after a swap.
-     */
-    function _updateReserves(address tokenIn, address tokenOut, uint amountIn, uint amountOut) internal {
-        // Logic to update the reserves in the pool's storage
     }
 }

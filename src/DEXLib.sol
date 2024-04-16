@@ -2,7 +2,7 @@
 pragma solidity ^0.8.24;
 
 library DEXLib {
-    uint public constant MINIMUM_LIQUIDITY = 10**3;
+    uint public constant MINIMUM_LIQUIDITY = 1e3;
     /**
      * @dev Sorts two token addresses in order to prevent duplicates pools
      * and ensure consistent ordering across the platform.
@@ -28,6 +28,4 @@ library DEXLib {
     function quote(uint amountA, uint reserveA, uint reserveB) internal pure returns (uint amountB) {
         amountB = amountA * reserveB / reserveA;
     }
-
-
 }

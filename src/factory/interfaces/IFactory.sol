@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.24;
 
 interface IFactory {
+    function createGauge(address lpToken, address rewardToken, uint256 allocAmount) external returns (address gauge);
     function createPool(address tokenA, address tokenB) external returns (address pool);
     function getPool(address tokenA, address tokenB) external returns (address pool);
-    function initializeFactory(address poolDictionary) external;
+    function initialize(address poolDictionary) external;
 }
