@@ -5,6 +5,36 @@ This repository houses Forkathon DEX, a rebuild of simplified AMM-DEX using the 
 This DEX repository is built on the metacontract framework and contains the following bundles and functions. 
 Each bundle corresponds to a specific functionality or role within the DEX, with functions performing detailed operations within those bundles.
 
+## ER diagram
+```mermaid
+flowchart LR
+  proxy[factory proxy]
+  proxyg[gauge proxy]
+  proxyp[pool proxy]
+  subgraph factory[Factory Dictionary]
+    direction LR
+    createGauge
+    createPool
+  end
+  subgraph gauge[Gauge dictionary]
+    direction LR
+    deposit
+    withdraw
+    claim
+  end
+  subgraph pool[Pool Dictionary]
+    direction LR
+    addLiquidity
+    removeLiquidity
+    swap
+  end
+  proxy-->|refer|factory
+  proxyg-->|refer|gauge
+  createGauge-->|create|proxyg
+  proxyp-->|refer|pool
+  createPool-->|create|proxyp
+```
+## Bundles
 ### Factory
 Responsible for creating unique liquidity pools for each token pair.
 
