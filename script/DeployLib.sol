@@ -40,7 +40,7 @@ library DeployLib {
         mc.use("InitializeGauge", InitializeGauge.initialize.selector, address(new InitializeGauge()));
         mc.use("Withdraw", Withdraw.withdraw.selector, address(new Withdraw()));
         mc.useFacade(address(new GaugeFacade()));
-        mc.deploy();
+        mc.deployDictionary();
         return mc;
     }
 
@@ -51,7 +51,7 @@ library DeployLib {
         mc.use("RemoveLiquidity", RemoveLiquidity.removeLiquidity.selector, address(new RemoveLiquidity()));
         mc.use("Swap", Swap.swap.selector, address(new Swap()));
         mc.useFacade(address(new PoolFacade()));
-        mc.deploy();
+        mc.deployDictionary();
         return mc;
     }
 
