@@ -74,5 +74,10 @@ git clone https://github.com/ecdysisxyz/forkathon-dex.git
 cd forkathon-dex
 ```
 
+### Install
+```bash
+forge install
+```
+
 ### Prerequisites
 - Foundry
