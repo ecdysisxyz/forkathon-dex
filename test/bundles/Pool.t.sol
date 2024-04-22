@@ -13,6 +13,7 @@ import {DeployLib} from "../../script/DeployLib.sol";
 import {TestERC20} from "bundle/TestERC20.sol";
 
 import {IFactory} from "bundle/factory/interfaces/IFactory.sol";
+import {DEXLib} from "bundle/DEXLib.sol";
 
 import {IPoolTester} from "../utils/IPoolTester.sol";
 import {StorageReader} from "../utils/StorageReader.sol";
@@ -23,23 +24,29 @@ contract PoolTest is MCTest {
     IFactory public factory;
     IPoolTester public pool;
     address[2] public tokens;
-    IERC20 public lptoken; 
+    IERC20 public lptoken;
 
     function setUp() public {
         factory = IFactory(mc.deployFactory().toProxyAddress());
 
-        mc.setStorageReader(DeployLib.poolBundleName(), IPoolTester.PoolState.selector, address(new StorageReader()));
+        mc.setStorageReader(
+            DeployLib.poolBundleName(),
+            IPoolTester.PoolState.selector,
+            address(new StorageReader())
+        );
 
-        for (uint i;i<2;i++) {
-            tokens[i] = address(new TestERC20(address(this)));
-        }
+        address tokenA = address(new TestERC20(address(this)));
+        address tokenB = address(new TestERC20(address(this)));
+        (address token0, address token1) = DEXLib.sortTokens(tokenA, tokenB);
+        tokens[0] = token0;
+        tokens[1] = token1;
+
         pool = IPoolTester(factory.createPool(tokens[0], tokens[1]));
-        for (uint i;i<2;i++) {
+        for (uint i; i < 2; i++) {
             IERC20(tokens[i]).approve(address(pool), type(uint).max);
         }
 
         lptoken = IERC20(pool.PoolState().lptoken);
-
     }
 
     function test_Success_AddLiquidity() public {
@@ -53,7 +60,7 @@ contract PoolTest is MCTest {
 
         uint befLpTtlSply = lptoken.totalSupply();
         uint befLpBalance = lptoken.balanceOf(address(this));
-        
+
         pool.removeLiquidity(1e17);
 
         assertLt(lptoken.totalSupply(), befLpTtlSply);
@@ -68,9 +75,9 @@ contract PoolTest is MCTest {
     function test_Success_Swap() public {
         pool.addLiquidity(1e18, 1e18);
 
-        uint befTokenBBalance = IERC20(tokens[0]).balanceOf(address(this));
+        uint befToken1Balance = IERC20(tokens[1]).balanceOf(address(this));
         pool.swap(1e15, 0);
-        assertGt(IERC20(tokens[0]).balanceOf(address(this)), befTokenBBalance);
+        assertGt(IERC20(tokens[1]).balanceOf(address(this)), befToken1Balance);
     }
 
     function test_Fail_Swap_Insufficient() public {
@@ -78,6 +85,5 @@ contract PoolTest is MCTest {
 
         vm.expectRevert();
         pool.swap(1, 0);
-
     }
 }
